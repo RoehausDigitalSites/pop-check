@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Emotion Tracker MVP
 
-## Getting Started
+A simple SMS-based emotional tracking app built with Next.js + Postgres + Prisma.
 
-First, run the development server:
+### What it does
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Sends daily SMS check-in links.
+- Lets participant submit scale-based answers quickly.
+- Supports manual anytime check-ins via persistent manual URL.
+- Stores all responses for later charting.
+- Includes an admin dashboard for questions and schedule.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Tech stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Next.js App Router
+- Prisma + Postgres
+- Twilio SMS
+- Vercel Cron
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Setup
 
-## Learn More
+1. Copy env file and fill values:
 
-To learn more about Next.js, take a look at the following resources:
+   `cp .env.example .env`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Install dependencies:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   `npm install`
 
-## Deploy on Vercel
+3. Run database migration:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   `npm run db:migrate -- --name init`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. Seed starter participant + questionnaire:
+
+   `npm run db:seed`
+
+5. Start dev server:
+
+   `npm run dev`
+
+Open `http://localhost:3000` and then `http://localhost:3000/admin`.
+
+### Twilio behavior
+
+- If Twilio env variables are not set, SMS sends are logged to server output as `[mock-sms]`.
+- Once configured, real SMS sends are made via Twilio.
+
+### Cron endpoint
+
+- Endpoint: `GET /api/cron/send-daily`
+- Auth: `Authorization: Bearer <CRON_SECRET>` (or `x-cron-secret` for manual testing)
+- Vercel cron schedule configured in `vercel.json` to run every 5 minutes.

@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CheckinSource {
+  SCHEDULED
+  MANUAL
+}
+
+model Participant {
+  id                    String            @id @default(cuid())
+  name                  String
+  phone                 String            @unique
+  timezone              String            @default("America/Los_Angeles")
+  active                Boolean           @default(true)
+  manualAccessTokenHash String?           @unique
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+  checkinRequests       CheckinRequest[]
+  checkins              Checkin[]
+  scheduleSetting       ScheduleSetting?
+}
+
+model Questionnaire {
+  id          String     @id @default(cuid())
+  title       String
+  isActive    Boolean    @default(true)
+  scaleMin    Int        @default(1)
+  scaleMax    Int        @default(5)
+  minLabel    String     @default("Better")
+  maxLabel    String     @default("Harder")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  questions   Question[]
+  checkins    Checkin[]
+}
+
+model Question {
+  id              String        @id @default(cuid())
+  questionnaireId String
+  prompt          String
+  position        Int
+  enabled         Boolean       @default(true)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id], onDelete: Cascade)
+  answers         CheckinAnswer[]
+
+  @@unique([questionnaireId, position])
+}
+
+model CheckinRequest {
+  id            String       @id @default(cuid())
+  participantId String
+  tokenHash     String       @unique
+  sentAt        DateTime     @default(now())
+  expiresAt     DateTime
+  usedAt        DateTime?
+  source        CheckinSource
+  createdAt     DateTime     @default(now())
+  participant   Participant  @relation(fields: [participantId], references: [id], onDelete: Cascade)
+}
+
+model Checkin {
+  id              String        @id @default(cuid())
+  participantId   String
+  questionnaireId String
+  submittedAt     DateTime      @default(now())
+  note            String?
+  createdAt       DateTime      @default(now())
+  participant     Participant   @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id], onDelete: Cascade)
+  answers         CheckinAnswer[]
+}
+
+model CheckinAnswer {
+  id         String   @id @default(cuid())
+  checkinId  String
+  questionId String
+  value      Int
+  createdAt  DateTime @default(now())
+  checkin    Checkin  @relation(fields: [checkinId], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([checkinId, questionId])
+}
+
+model ScheduleSetting {
+  id              String      @id @default(cuid())
+  participantId   String      @unique
+  dailyTimeLocal  String      @default("18:00")
+  timezone        String      @default("America/Los_Angeles")
+  reminderEnabled Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  participant     Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+}
