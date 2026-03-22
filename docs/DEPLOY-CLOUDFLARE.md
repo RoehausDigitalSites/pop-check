@@ -119,3 +119,13 @@ Because DNS and Pages live in one place, you usually **do not** need the extra �
 - **Prisma / DB in Workers:** Hyperdrive + Prisma docs (links above).
 - **Build fails on Pages:** Compare your repo to the latest **OpenNext + Cloudflare** example for your Next.js major version.
 - **Simpler alternative:** Deploy the same repo to **Vercel** or a **Node** host with `next start` and keep using `vercel.json` cron — no Workers adapter required.
+
+### Worker size limit (free plan ~3 MiB)
+
+Cloudflare’s **free** Workers bundle is capped around **3 MiB**. If deploy fails with *“Worker exceeded the size limit”*:
+
+1. **This repo avoids the common pitfall:** do **not** import from the umbrella `radix-ui` package — its main file pulls in **every** Radix component. Use scoped packages (`@radix-ui/react-slot`, `@radix-ui/react-slider`, …) only.
+2. Prefer **named imports** from `recharts` instead of `import * as recharts`.
+3. **Paid Workers** raise the limit (e.g. **10 MiB** on paid plans — see Cloudflare’s pricing/docs).
+
+If you still exceed the limit after trimming dependencies, use a **paid Workers plan** or deploy to a **Node** host (Vercel, Railway, etc.) where this cap does not apply.
