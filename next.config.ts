@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Smaller Cloudflare Worker bundles: avoid pulling full barrel exports.
+  // Tree-shake heavy packages (smaller server bundles).
   experimental: {
     optimizePackageImports: ["recharts", "date-fns", "date-fns-tz"],
   },

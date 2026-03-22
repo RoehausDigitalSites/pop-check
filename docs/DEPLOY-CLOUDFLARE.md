@@ -1,4 +1,6 @@
-# Deploy Pop Check on Cloudflare Pages
+# Deploy Pop Check on Cloudflare Pages (optional)
+
+> **Default deploy:** This repo is set up for **[Vercel + Node.js](./DEPLOY-VERCEL.md)**. The instructions below are only if you want Cloudflare Pages / Workers instead.
 
 Cloudflare Pages does **not** run a normal Node server. Next.js on Cloudflare uses the **OpenNext Cloudflare** adapter so your app runs on **Workers**. Follow the official guide and keep this checklist handy.
 
@@ -6,9 +8,9 @@ Cloudflare Pages does **not** run a normal Node server. Next.js on Cloudflare us
 
 ---
 
-## 0. Edge runtime (this repo)
+## 0. Edge runtime (if you use Cloudflare)
 
-All app routes and API handlers use `export const runtime = "edge"` so **Cloudflare Pages** / `@cloudflare/next-on-pages` can bundle them. Prisma talks to Postgres via **`@prisma/adapter-neon`** and **`@neondatabase/serverless`** (a normal `postgresql://…` Neon URL — not `prisma://`). SMS uses Twilio’s **REST API via `fetch`**. In production on Workers, point **`DATABASE_URL`** at Neon (often via **Hyperdrive**).
+The main branch uses the **default Node.js runtime** on Vercel. For Cloudflare Workers you typically need **`export const runtime = "edge"`** on routes again, plus the **OpenNext Cloudflare** adapter per their docs. Prisma talks to Postgres via **`@prisma/adapter-neon`** and **`@neondatabase/serverless`**. In production on Workers, point **`DATABASE_URL`** at Neon (often via **Hyperdrive**).
 
 ## 1. Prerequisites
 

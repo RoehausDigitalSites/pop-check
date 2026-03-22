@@ -4,8 +4,6 @@ import { createCheckinRequest, buildCheckinUrl } from "@/lib/checkins";
 import { getEnv } from "@/lib/env";
 import { hashToken } from "@/lib/tokens";
 
-export const runtime = "edge";
-
 type RouteProps = {
   params: Promise<{ token: string }>;
 };

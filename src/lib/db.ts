@@ -8,7 +8,7 @@ if (!connectionString) {
   throw new Error("DATABASE_URL environment variable is not set");
 }
 
-// Edge (`NEXT_RUNTIME === "edge"`): WebSocket is built in. Node (`next dev`, `tsx prisma/seed`, etc.): use `ws`.
+// Vercel / Node (`next dev`, `tsx prisma/seed`): Neon needs `ws` for WebSocket. Edge runtimes use the built-in WebSocket.
 if (process.env.NEXT_RUNTIME !== "edge") {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   neonConfig.webSocketConstructor = require("ws");

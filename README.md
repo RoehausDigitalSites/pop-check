@@ -50,11 +50,10 @@ Open `http://localhost:3000` and then `http://localhost:3000/admin`.
 
 - Endpoint: `GET /api/cron/send-daily`
 - Auth: `Authorization: Bearer <CRON_SECRET>` (or `x-cron-secret` for manual testing)
-- **Vercel:** `vercel.json` can schedule this route (if you deploy there).
-- **Cloudflare Pages:** `vercel.json` is not used — schedule with Workers Cron or an external cron hitting the URL. See **[docs/DEPLOY-CLOUDFLARE.md](./docs/DEPLOY-CLOUDFLARE.md)**.
+- **Vercel:** `vercel.json` schedules this route — see **[docs/DEPLOY-VERCEL.md](./docs/DEPLOY-VERCEL.md)**.
 
-### Deploy (Cloudflare Pages + isles.life)
+### Deploy (Vercel)
 
-Step-by-step guide: **[docs/DEPLOY-CLOUDFLARE.md](./docs/DEPLOY-CLOUDFLARE.md)** (OpenNext adapter, Hyperdrive, env vars, domain in Cloudflare, cron).
+Step-by-step: **[docs/DEPLOY-VERCEL.md](./docs/DEPLOY-VERCEL.md)** (env vars, migrations, cron, domain).
 
-Official reference: [Next.js on Cloudflare](https://developers.cloudflare.com/pages/framework-guides/nextjs/).
+Optional: deploying on **Cloudflare Pages** instead requires an OpenNext/Workers setup and different constraints — see **[docs/DEPLOY-CLOUDFLARE.md](./docs/DEPLOY-CLOUDFLARE.md)** (not the default path for this repo).

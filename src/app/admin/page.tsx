@@ -3,8 +3,6 @@ import { db } from '@/lib/db';
 import { isAdminAuthenticated } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 
-export const runtime = 'edge';
-
 type AdminPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };

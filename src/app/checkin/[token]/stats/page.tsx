@@ -5,8 +5,6 @@ import { getCheckinStatsForParticipant } from "@/lib/checkin-stats-data";
 import { Button } from "@/components/ui/button";
 import { CheckinStatsChart } from "@/components/checkin-stats-chart";
 
-export const runtime = "edge";
-
 type PageProps = {
   params: Promise<{ token: string }>;
 };

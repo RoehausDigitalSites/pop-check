@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { setAdminAuthCookie } from "@/lib/auth";
 
-export const runtime = "edge";
-
 export async function POST(request: Request): Promise<NextResponse> {
   const formData = await request.formData();
   const passphrase = formData.get("passphrase");

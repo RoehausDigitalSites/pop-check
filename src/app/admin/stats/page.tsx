@@ -5,8 +5,6 @@ import { isAdminAuthenticated } from "@/lib/auth";
 import { getCheckinStatsForParticipant } from "@/lib/checkin-stats-data";
 import { CheckinStatsChart } from "@/components/checkin-stats-chart";
 
-export const runtime = "edge";
-
 export default async function AdminStatsPage() {
   const authenticated = await isAdminAuthenticated();
   if (!authenticated) {

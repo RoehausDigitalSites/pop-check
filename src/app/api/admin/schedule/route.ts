@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { requireAdminOr401 } from "@/lib/admin";
 
-export const runtime = "edge";
-
 export async function POST(request: Request): Promise<NextResponse> {
   const authError = await requireAdminOr401();
   if (authError) {

@@ -4,8 +4,6 @@ import { getValidCheckinRequest } from "@/lib/checkin-link";
 import { db } from "@/lib/db";
 import { CheckinForm } from "../checkin-form";
 
-export const runtime = "edge";
-
 type PageProps = {
   params: Promise<{ token: string }>;
 };

@@ -3,8 +3,6 @@ import { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 import { requireAdminOr401 } from "@/lib/admin";
 
-export const runtime = "edge";
-
 export async function GET(): Promise<NextResponse> {
   const authError = await requireAdminOr401();
   if (authError) {

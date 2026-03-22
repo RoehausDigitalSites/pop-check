@@ -5,8 +5,6 @@ import { getEnv } from "@/lib/env";
 import { requireAdminOr401 } from "@/lib/admin";
 import { createManualAccessToken } from "@/lib/tokens";
 
-export const runtime = "edge";
-
 export async function POST(request: Request): Promise<NextResponse> {
   const env = getEnv();
   const authError = await requireAdminOr401();

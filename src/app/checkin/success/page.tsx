@@ -1,5 +1,3 @@
-export const runtime = "edge";
-
 export default function CheckinSuccessPage() {
   return (
     <main className="w-full">

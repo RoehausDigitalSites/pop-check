@@ -4,8 +4,6 @@ import { getValidCheckinRequest } from "@/lib/checkin-link";
 import { db } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 
-export const runtime = "edge";
-
 type PageProps = {
   params: Promise<{ token: string }>;
 };

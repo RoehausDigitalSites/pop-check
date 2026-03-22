@@ -1,7 +1,5 @@
 import type { Viewport } from "next";
 
-export const runtime = "edge";
-
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,

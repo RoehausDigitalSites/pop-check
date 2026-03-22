@@ -5,8 +5,6 @@ import { getEnv } from "@/lib/env";
 import { buildCheckinUrl, createCheckinRequest } from "@/lib/checkins";
 import { sendCheckinSms } from "@/lib/sms";
 
-export const runtime = "edge";
-
 function shouldSendNow(timezone: string, dailyTimeLocal: string): boolean {
   const nowLocal = formatInTimeZone(new Date(), timezone, "HH:mm");
   return nowLocal === dailyTimeLocal;
