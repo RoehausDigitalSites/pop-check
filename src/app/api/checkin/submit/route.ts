@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { hashToken } from "@/lib/tokens";
 
+export const runtime = "edge";
+
 export async function POST(request: Request): Promise<NextResponse> {
   const formData = await request.formData();
   const token = formData.get("token");

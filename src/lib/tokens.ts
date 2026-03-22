@@ -1,17 +1,30 @@
-import crypto from "node:crypto";
+import { sha256 } from "@noble/hashes/sha2.js";
+import { bytesToHex, utf8ToBytes } from "@noble/hashes/utils.js";
 
 const TOKEN_BYTES = 32;
 
-function sha256(input: string): string {
-  return crypto.createHash("sha256").update(input).digest("hex");
+function randomBytes(length: number): Uint8Array {
+  const buf = new Uint8Array(length);
+  crypto.getRandomValues(buf);
+  return buf;
+}
+
+/** Base64url without Node Buffer (Edge / Workers safe). */
+function toBase64Url(bytes: Uint8Array): string {
+  let str = "";
+  for (let i = 0; i < bytes.length; i++) {
+    str += String.fromCharCode(bytes[i]!);
+  }
+  const b64 = btoa(str);
+  return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
 export function generateRawToken(): string {
-  return crypto.randomBytes(TOKEN_BYTES).toString("base64url");
+  return toBase64Url(randomBytes(TOKEN_BYTES));
 }
 
 export function hashToken(rawToken: string): string {
-  return sha256(rawToken);
+  return bytesToHex(sha256(utf8ToBytes(rawToken)));
 }
 
 export function createManualAccessToken(): { rawToken: string; tokenHash: string } {

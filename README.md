@@ -15,7 +15,7 @@ A simple SMS-based daily check-in app for family (built with Next.js + Postgres 
 - Next.js App Router
 - Prisma + Postgres
 - Twilio SMS
-- Vercel Cron
+- Scheduled reminders via `/api/cron/send-daily` (see deployment docs)
 
 ### Setup
 
@@ -50,4 +50,11 @@ Open `http://localhost:3000` and then `http://localhost:3000/admin`.
 
 - Endpoint: `GET /api/cron/send-daily`
 - Auth: `Authorization: Bearer <CRON_SECRET>` (or `x-cron-secret` for manual testing)
-- Vercel cron schedule configured in `vercel.json` to run every 5 minutes.
+- **Vercel:** `vercel.json` can schedule this route (if you deploy there).
+- **Cloudflare Pages:** `vercel.json` is not used — schedule with Workers Cron or an external cron hitting the URL. See **[docs/DEPLOY-CLOUDFLARE.md](./docs/DEPLOY-CLOUDFLARE.md)**.
+
+### Deploy (Cloudflare Pages + isles.life)
+
+Step-by-step guide: **[docs/DEPLOY-CLOUDFLARE.md](./docs/DEPLOY-CLOUDFLARE.md)** (OpenNext adapter, Hyperdrive, env vars, domain in Cloudflare, cron).
+
+Official reference: [Next.js on Cloudflare](https://developers.cloudflare.com/pages/framework-guides/nextjs/).

@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { getValidCheckinRequest } from "@/lib/checkin-link";
 import { db } from "@/lib/db";
 import { CheckinForm } from "../checkin-form";
-import Link from "next/link";
+
+export const runtime = "edge";
 
 type PageProps = {
   params: Promise<{ token: string }>;

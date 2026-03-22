@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+export const runtime = "edge";
+
 export default function Home() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-2xl flex-col justify-center gap-4 px-6 py-10">

@@ -10,6 +10,8 @@ import {
   type StatsSeries,
 } from "./checkin-stats-chart";
 
+export const runtime = "edge";
+
 type PageProps = {
   params: Promise<{ token: string }>;
 };
