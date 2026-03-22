@@ -8,7 +8,7 @@ Cloudflare Pages does **not** run a normal Node server. Next.js on Cloudflare us
 
 ## 0. Edge runtime (this repo)
 
-All app routes and API handlers use `export const runtime = "edge"` so **Cloudflare Pages** / `@cloudflare/next-on-pages` can bundle them. Prisma uses `@prisma/client/edge`; SMS uses Twilio’s **REST API via `fetch`** (the official Node SDK is not Edge-compatible). Use **Hyperdrive** (or a compatible serverless Postgres URL) for production DB access from Workers.
+All app routes and API handlers use `export const runtime = "edge"` so **Cloudflare Pages** / `@cloudflare/next-on-pages` can bundle them. Prisma talks to Postgres via **`@prisma/adapter-neon`** and **`@neondatabase/serverless`** (a normal `postgresql://…` Neon URL — not `prisma://`). SMS uses Twilio’s **REST API via `fetch`**. In production on Workers, point **`DATABASE_URL`** at Neon (often via **Hyperdrive**).
 
 ## 1. Prerequisites
 

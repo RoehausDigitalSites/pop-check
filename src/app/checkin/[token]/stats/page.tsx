@@ -1,14 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { format } from "date-fns";
 import { getValidCheckinRequest } from "@/lib/checkin-link";
-import { db } from "@/lib/db";
+import { getCheckinStatsForParticipant } from "@/lib/checkin-stats-data";
 import { Button } from "@/components/ui/button";
-import {
-  CheckinStatsChart,
-  type StatsRow,
-  type StatsSeries,
-} from "./checkin-stats-chart";
+import { CheckinStatsChart } from "@/components/checkin-stats-chart";
 
 export const runtime = "edge";
 
@@ -23,14 +18,9 @@ export default async function CheckinStatsPage({ params }: PageProps) {
     return notFound();
   }
 
-  const questionnaire = await db.questionnaire.findFirst({
-    where: { isActive: true },
-    include: {
-      questions: { where: { enabled: true }, orderBy: { position: "asc" } },
-    },
-  });
+  const stats = await getCheckinStatsForParticipant(checkinRequest.participantId);
 
-  if (!questionnaire) {
+  if (!stats) {
     return (
       <main className="w-full">
         <div className="rounded-3xl border border-zinc-200/80 bg-white/85 p-6 text-center text-zinc-600 shadow-lg shadow-zinc-200/40 backdrop-blur-md">
@@ -42,38 +32,6 @@ export default async function CheckinStatsPage({ params }: PageProps) {
     );
   }
 
-  const checkins = await db.checkin.findMany({
-    where: {
-      participantId: checkinRequest.participantId,
-      questionnaireId: questionnaire.id,
-    },
-    orderBy: { submittedAt: "asc" },
-    take: 120,
-    include: {
-      answers: { include: { question: true } },
-    },
-  });
-
-  const questions = questionnaire.questions;
-
-  const series: StatsSeries[] = questions.map((q) => ({
-    key: `q_${q.id}`,
-    label:
-      q.prompt.length > 36 ? `${q.prompt.slice(0, 34)}…` : q.prompt,
-  }));
-
-  const rows: StatsRow[] = checkins.map((c) => {
-    const row: StatsRow = {
-      label: format(c.submittedAt, "MMM d, h:mm a"),
-      fullDate: format(c.submittedAt, "MMM d, yyyy · h:mm a"),
-    };
-    for (const q of questions) {
-      const ans = c.answers.find((a) => a.questionId === q.id);
-      row[`q_${q.id}`] = ans?.value ?? null;
-    }
-    return row;
-  });
-
   const enc = encodeURIComponent(token);
 
   return (
@@ -84,7 +42,7 @@ export default async function CheckinStatsPage({ params }: PageProps) {
             Pop Check · Stats
           </p>
           <h1 className="mt-2 text-xl font-medium leading-snug tracking-tight text-zinc-800 sm:text-2xl">
-            {questionnaire.title}
+            {stats.questionnaireTitle}
           </h1>
           <p className="mt-2 text-sm font-normal leading-relaxed text-zinc-500 sm:text-base">
             {checkinRequest.participant.name}, here’s how your recent check-ins look.
@@ -106,10 +64,10 @@ export default async function CheckinStatsPage({ params }: PageProps) {
       </div>
 
       <CheckinStatsChart
-        rows={rows}
-        series={series}
-        scaleMin={questionnaire.scaleMin}
-        scaleMax={questionnaire.scaleMax}
+        rows={stats.rows}
+        series={stats.series}
+        scaleMin={stats.scaleMin}
+        scaleMax={stats.scaleMax}
       />
     </main>
   );

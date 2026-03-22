@@ -85,6 +85,10 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           Manage daily prompts, schedule, and manual access.
         </p>
         <p className="mt-2 text-sm">
+          <Link href="/admin/stats" className="text-blue-700 underline">
+            Stats chart
+          </Link>
+          {' · '}
           Participant check-in page:{' '}
           <Link href="/" className="text-blue-700 underline">
             home

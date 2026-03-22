@@ -17,6 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import type { StatsRow, StatsSeries } from "@/lib/checkin-stats-types";
 
 const PALETTE = [
   "hsl(221 83% 53%)",
@@ -27,25 +28,28 @@ const PALETTE = [
   "hsl(330 81% 60%)",
 ];
 
-export type StatsSeries = {
-  key: string;
-  label: string;
-};
-
-export type StatsRow = {
-  label: string;
-  fullDate: string;
-  [key: string]: string | number | null | undefined;
-};
-
 type Props = {
   rows: StatsRow[];
   series: StatsSeries[];
   scaleMin: number;
   scaleMax: number;
+  /** Card title (default: participant-facing copy). */
+  title?: string;
+  /** Subtitle when there is data. */
+  description?: string;
+  /** Message when there are no check-ins yet. */
+  emptyDescription?: string;
 };
 
-export function CheckinStatsChart({ rows, series, scaleMin, scaleMax }: Props) {
+export function CheckinStatsChart({
+  rows,
+  series,
+  scaleMin,
+  scaleMax,
+  title = "Responses over time",
+  description = "One line per question. Higher values are toward the top of your scale.",
+  emptyDescription = "Complete a check-in to see trends here.",
+}: Props) {
   const config = React.useMemo(() => {
     const c: ChartConfig = {};
     series.forEach((s, i) => {
@@ -61,12 +65,8 @@ export function CheckinStatsChart({ rows, series, scaleMin, scaleMax }: Props) {
     return (
       <Card className="border-zinc-100/90 bg-white/70 shadow-md shadow-zinc-200/30 backdrop-blur-md">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base font-medium text-zinc-800">
-            Your responses over time
-          </CardTitle>
-          <CardDescription className="font-normal">
-            Complete a check-in to see your trends here.
-          </CardDescription>
+          <CardTitle className="text-base font-medium text-zinc-800">{title}</CardTitle>
+          <CardDescription className="font-normal">{emptyDescription}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -75,12 +75,8 @@ export function CheckinStatsChart({ rows, series, scaleMin, scaleMax }: Props) {
   return (
     <Card className="border-zinc-100/90 bg-white/70 shadow-md shadow-zinc-200/30 backdrop-blur-md">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-medium text-zinc-800">
-          Your responses over time
-        </CardTitle>
-        <CardDescription className="font-normal">
-          One line per question. Higher values are toward the top of your scale.
-        </CardDescription>
+        <CardTitle className="text-base font-medium text-zinc-800">{title}</CardTitle>
+        <CardDescription className="font-normal">{description}</CardDescription>
       </CardHeader>
       <CardContent className="pb-4">
         <ChartContainer config={config} className="aspect-4/3 w-full min-h-[260px] sm:aspect-video sm:min-h-[280px]">

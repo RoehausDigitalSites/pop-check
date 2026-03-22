@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import "dotenv/config";
 import { createManualAccessToken } from "../src/lib/tokens";
-
-const prisma = new PrismaClient();
+import { db as prisma } from "../src/lib/db";
 
 async function main() {
   const participant = await prisma.participant.upsert({
