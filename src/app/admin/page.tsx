@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { db } from '@/lib/db';
 import { isAdminAuthenticated } from '@/lib/auth';
+import { Button } from '@/components/ui/button';
 
 type AdminPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -41,12 +42,9 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           {error === 'invalid' && (
             <p className="text-sm text-red-600">Wrong passphrase.</p>
           )}
-          <button
-            type="submit"
-            className="w-full rounded-xl bg-zinc-900 px-4 py-2.5 text-white"
-          >
+          <Button type="submit" className="w-full">
             Sign in
-          </button>
+          </Button>
         </form>
       </main>
     );
@@ -140,24 +138,38 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               />
             </label>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <label className="block">
-              <span className="text-sm font-medium">Min Label</span>
-              <input
-                name="minLabel"
-                defaultValue={questionnaire.minLabel}
-                className="mt-1 w-full rounded-xl border border-zinc-300 px-3 py-2"
-              />
-            </label>
-            <label className="block">
-              <span className="text-sm font-medium">Max Label</span>
-              <input
-                name="maxLabel"
-                defaultValue={questionnaire.maxLabel}
-                className="mt-1 w-full rounded-xl border border-zinc-300 px-3 py-2"
-              />
-            </label>
-          </div>
+          <label className="block">
+            <span className="text-sm font-medium">
+              Scale labels (one per value, from {questionnaire.scaleMin} to{' '}
+              {questionnaire.scaleMax})
+            </span>
+            <textarea
+              name="scaleLabels"
+              placeholder={`e.g. for 1–5:\nEasiest\nEasy\nOkay\nHard\nHardest`}
+              defaultValue={(() => {
+                const labels = (questionnaire as { scaleLabels?: unknown }).scaleLabels;
+                if (Array.isArray(labels)) return labels.join('\n');
+                if (questionnaire.minLabel && questionnaire.maxLabel) {
+                  const middle = questionnaire.scaleMax - questionnaire.scaleMin - 1;
+                  return [
+                    questionnaire.minLabel,
+                    ...Array.from({ length: middle }, () => ''),
+                    questionnaire.maxLabel,
+                  ].join('\n');
+                }
+                return '';
+              })()}
+              rows={
+                questionnaire.scaleMax - questionnaire.scaleMin + 1
+              }
+              className="mt-1 w-full rounded-xl border border-zinc-300 px-3 py-2 font-mono text-sm"
+            />
+            <p className="mt-1 text-xs text-zinc-500">
+              Line 1 = label for {questionnaire.scaleMin}, last line = label for{' '}
+              {questionnaire.scaleMax}. Must have exactly{' '}
+              {questionnaire.scaleMax - questionnaire.scaleMin + 1} lines to save.
+            </p>
+          </label>
           <label className="block">
             <span className="text-sm font-medium">
               Questions (one per line)
@@ -170,12 +182,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               className="mt-1 min-h-40 w-full rounded-xl border border-zinc-300 px-3 py-2"
             />
           </label>
-          <button
-            type="submit"
-            className="cursor-pointer rounded-xl bg-zinc-900 px-4 py-2.5 text-white"
-          >
-            Save questionnaire
-          </button>
+          <Button type="submit">Save questionnaire</Button>
         </form>
       </section>
 
@@ -220,12 +227,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             />
             Send daily reminder SMS
           </label>
-          <button
-            type="submit"
-            className="cursor-pointer rounded-xl bg-zinc-900 px-4 py-2.5 text-white"
-          >
-            Save schedule
-          </button>
+          <Button type="submit">Save schedule</Button>
         </form>
       </section>
 
@@ -237,12 +239,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         </p>
         <form action="/api/admin/manual-link" method="post" className="mt-4">
           <input type="hidden" name="participantId" value={participant.id} />
-          <button
-            type="submit"
-            className="rounded-xl bg-zinc-900 px-4 py-2.5 text-white"
-          >
-            Generate manual link
-          </button>
+          <Button type="submit">Generate manual link</Button>
         </form>
       </section>
 

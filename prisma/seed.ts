@@ -39,6 +39,7 @@ async function main() {
       scaleMax: 5,
       minLabel: "Better",
       maxLabel: "Harder",
+      scaleLabels: ["Easiest", "Easy", "Okay", "Hard", "Hardest"],
     },
     create: {
       id: "default-questionnaire",
@@ -48,6 +49,7 @@ async function main() {
       scaleMax: 5,
       minLabel: "Better",
       maxLabel: "Harder",
+      scaleLabels: ["Easiest", "Easy", "Okay", "Hard", "Hardest"],
     },
   });
 

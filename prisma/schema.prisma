@@ -39,6 +39,7 @@ model Questionnaire {
   scaleMax    Int        @default(5)
   minLabel    String     @default("Better")
   maxLabel    String     @default("Harder")
+  scaleLabels Json?      // Array of labels, one per value from scaleMin to scaleMax
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   questions   Question[]

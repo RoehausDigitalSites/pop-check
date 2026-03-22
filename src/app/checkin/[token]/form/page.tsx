@@ -1,14 +1,14 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getValidCheckinRequest } from "@/lib/checkin-link";
 import { db } from "@/lib/db";
-import { Button } from "@/components/ui/button";
+import { CheckinForm } from "../checkin-form";
+import Link from "next/link";
 
 type PageProps = {
   params: Promise<{ token: string }>;
 };
 
-export default async function CheckinLandingPage({ params }: PageProps) {
+export default async function CheckinFormPage({ params }: PageProps) {
   const { token } = await params;
   const checkinRequest = await getValidCheckinRequest(token);
   if (!checkinRequest) {
@@ -17,6 +17,9 @@ export default async function CheckinLandingPage({ params }: PageProps) {
 
   const questionnaire = await db.questionnaire.findFirst({
     where: { isActive: true },
+    include: {
+      questions: { where: { enabled: true }, orderBy: { position: "asc" } },
+    },
   });
 
   if (!questionnaire) {
@@ -35,36 +38,39 @@ export default async function CheckinLandingPage({ params }: PageProps) {
 
   return (
     <main className="w-full">
-      <div className="rounded-3xl border border-white/80 bg-white/75 p-6 shadow-lg shadow-zinc-300/30 backdrop-blur-xl backdrop-saturate-150 ring-1 ring-zinc-100/90 sm:p-8">
-        <div className="border-b border-zinc-100 pb-6">
+      <div className="rounded-3xl border border-white/80 bg-white/75 p-5 shadow-lg shadow-zinc-300/30 backdrop-blur-xl backdrop-saturate-150 ring-1 ring-zinc-100/90 sm:p-7">
+        <div className="border-b border-zinc-100 pb-5">
           <p className="text-[0.7rem] font-normal uppercase tracking-[0.2em] text-zinc-400">
-            Your link
+            Check-in
           </p>
           <h1 className="mt-2 text-xl font-medium leading-snug tracking-tight text-zinc-800 sm:text-2xl">
             {questionnaire.title}
           </h1>
           <p className="mt-2 text-sm font-normal leading-relaxed text-zinc-500 sm:text-base">
-            Hi {checkinRequest.participant.name}, what would you like to do?
+            Hi {checkinRequest.participant.name}, how are you today?
+          </p>
+          <p className="mt-3">
+            <Link
+              href={`/checkin/${enc}`}
+              className="text-sm font-normal text-zinc-500 underline decoration-zinc-300 underline-offset-2 hover:text-zinc-700"
+            >
+              ← Back to options
+            </Link>
           </p>
         </div>
 
-        <div className="mt-6 flex flex-col gap-3 sm:mt-8">
-          <Button asChild className="h-12 w-full touch-manipulation text-base font-normal sm:h-11" size="lg">
-            <Link href={`/checkin/${enc}/form`}>Daily check-in</Link>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            className="h-12 w-full touch-manipulation border-zinc-200/90 bg-white/60 text-base font-normal text-zinc-800 shadow-sm backdrop-blur-sm hover:bg-white/90 sm:h-11"
-            size="lg"
-          >
-            <Link href={`/checkin/${enc}/stats`}>View my stats</Link>
-          </Button>
-        </div>
-
-        <p className="mt-6 text-center text-xs font-normal leading-relaxed text-zinc-400">
-          After you submit a check-in, this link stops working. You can view stats anytime before then.
-        </p>
+        <CheckinForm
+          token={token}
+          questionnaire={{
+            title: questionnaire.title,
+            scaleMin: questionnaire.scaleMin,
+            scaleMax: questionnaire.scaleMax,
+            scaleLabels: Array.isArray(questionnaire.scaleLabels)
+              ? (questionnaire.scaleLabels as string[])
+              : null,
+            questions: questionnaire.questions,
+          }}
+        />
       </div>
     </main>
   );

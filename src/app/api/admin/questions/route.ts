@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 import { requireAdminOr401 } from "@/lib/admin";
 
@@ -28,10 +29,14 @@ export async function POST(request: Request): Promise<NextResponse> {
   const scaleMax = Number(formData.get("scaleMax") ?? "5");
   const minLabel = String(formData.get("minLabel") ?? "Better").trim();
   const maxLabel = String(formData.get("maxLabel") ?? "Harder").trim();
+  const scaleLabelsRaw = String(formData.get("scaleLabels") ?? "").trim();
+  const scaleLabels: string[] = scaleLabelsRaw
+    ? scaleLabelsRaw.split("\n").map((s) => s.trim()).filter((s) => s.length > 0)
+    : [];
   const rawPrompts = String(formData.get("prompts") ?? "")
     .split("\n")
     .map((line) => line.trim())
-    .filter(Boolean);
+    .filter((line) => line.length > 0);
 
   if (rawPrompts.length === 0) {
     return NextResponse.redirect(new URL("/admin?error=no-questions", request.url));
@@ -42,10 +47,21 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.redirect(new URL("/admin?error=no-questionnaire", request.url));
   }
 
+  const expectedLabelCount = scaleMax - scaleMin + 1;
+  const scaleLabelsJson =
+    scaleLabels.length === expectedLabelCount ? scaleLabels : null;
+
   await db.$transaction(async (tx) => {
     await tx.questionnaire.update({
       where: { id: questionnaire.id },
-      data: { title, scaleMin, scaleMax, minLabel, maxLabel },
+      data: {
+        title,
+        scaleMin,
+        scaleMax,
+        minLabel,
+        maxLabel,
+        scaleLabels: scaleLabelsJson ?? Prisma.DbNull,
+      },
     });
 
     await tx.question.deleteMany({ where: { questionnaireId: questionnaire.id } });
