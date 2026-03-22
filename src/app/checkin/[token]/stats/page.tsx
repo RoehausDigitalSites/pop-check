@@ -79,7 +79,7 @@ export default async function CheckinStatsPage({ params }: PageProps) {
       <div className="rounded-3xl border border-white/80 bg-white/75 p-5 shadow-lg shadow-zinc-300/30 backdrop-blur-xl backdrop-saturate-150 ring-1 ring-zinc-100/90 sm:p-7">
         <div className="border-b border-zinc-100 pb-5">
           <p className="text-[0.7rem] font-normal uppercase tracking-[0.2em] text-zinc-400">
-            Stats
+            Pop Check · Stats
           </p>
           <h1 className="mt-2 text-xl font-medium leading-snug tracking-tight text-zinc-800 sm:text-2xl">
             {questionnaire.title}

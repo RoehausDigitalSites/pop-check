@@ -3,9 +3,10 @@ import Link from "next/link";
 export default function Home() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-2xl flex-col justify-center gap-4 px-6 py-10">
-      <h1 className="text-3xl font-semibold text-zinc-900">Emotion Tracker</h1>
+      <h1 className="text-3xl font-semibold text-zinc-900">Pop Check</h1>
       <p className="text-zinc-700">
-        This app sends a daily SMS check-in and records answers over time.
+        Daily SMS check-ins with your dad — quick ratings, saved history, and a
+        simple stats view.
       </p>
       <ul className="list-disc space-y-1 pl-5 text-zinc-700">
         <li>Admin setup: configure questions and daily reminder time.</li>

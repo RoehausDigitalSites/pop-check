@@ -1,6 +1,6 @@
-## Emotion Tracker MVP
+## Pop Check
 
-A simple SMS-based emotional tracking app built with Next.js + Postgres + Prisma.
+A simple SMS-based daily check-in app for family (built with Next.js + Postgres + Prisma).
 
 ### What it does
 

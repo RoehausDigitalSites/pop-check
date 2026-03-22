@@ -33,7 +33,7 @@ async function main() {
   const questionnaire = await prisma.questionnaire.upsert({
     where: { id: "default-questionnaire" },
     update: {
-      title: "Daily Emotional Check-In",
+      title: "Daily Check-In",
       isActive: true,
       scaleMin: 1,
       scaleMax: 5,
@@ -43,7 +43,7 @@ async function main() {
     },
     create: {
       id: "default-questionnaire",
-      title: "Daily Emotional Check-In",
+      title: "Daily Check-In",
       isActive: true,
       scaleMin: 1,
       scaleMax: 5,

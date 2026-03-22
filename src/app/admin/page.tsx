@@ -28,7 +28,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           method="post"
           className="space-y-4 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"
         >
-          <h1 className="text-xl font-semibold text-zinc-900">Admin sign in</h1>
+          <h1 className="text-xl font-semibold text-zinc-900">Pop Check — Admin</h1>
           <p className="text-sm text-zinc-700">
             Use your admin passphrase to manage questions and schedule.
           </p>
@@ -78,9 +78,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   return (
     <main className="mx-auto w-full max-w-3xl space-y-8 px-6 py-8">
       <header>
-        <h1 className="text-2xl font-semibold text-zinc-900">
-          Emotion Tracker Admin
-        </h1>
+        <h1 className="text-2xl font-semibold text-zinc-900">Pop Check</h1>
         <p className="mt-1 text-zinc-700">
           Manage daily prompts, schedule, and manual access.
         </p>

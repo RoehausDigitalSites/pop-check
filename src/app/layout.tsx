@@ -14,8 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Emotion Tracker",
-  description: "Daily emotional progress tracker with SMS check-ins.",
+  title: "Pop Check",
+  description:
+    "Quick daily check-ins for Dad — SMS links, simple ratings, and stats over time.",
 };
 
 export default function RootLayout({
