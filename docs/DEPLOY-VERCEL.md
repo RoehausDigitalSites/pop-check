@@ -40,7 +40,11 @@ The example schedule may be frequent for testing — adjust `vercel.json` to a d
 
 **Project** → **Settings** → **Domains** → add your domain. Set `APP_BASE_URL` to the canonical HTTPS URL.
 
-## 6. Smoke test
+## 6. Web Analytics
+
+The app includes `@vercel/analytics` in the root layout. In the Vercel dashboard, open **Analytics** for the project and enable **Web Analytics** if prompted so page views show up.
+
+## 7. Smoke test
 
 - Open `/` and `/admin`.
 - Trigger cron manually:
