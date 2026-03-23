@@ -15,7 +15,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   const formData = await request.formData();
   const participantId = String(formData.get("participantId") ?? "");
   if (!participantId) {
-    return NextResponse.redirect(new URL("/admin?error=participant", request.url));
+    return NextResponse.redirect(new URL("/?error=participant", request.url));
   }
 
   const { rawToken, tokenHash } = createManualAccessToken();
@@ -24,7 +24,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     data: { manualAccessTokenHash: tokenHash },
   });
 
-  const url = new URL("/admin", request.url);
+  const url = new URL("/", request.url);
   url.searchParams.set("manualUrl", buildManualAccessUrl(rawToken, env.APP_BASE_URL));
 
   return NextResponse.redirect(url);

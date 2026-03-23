@@ -15,7 +15,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   const reminderEnabled = formData.get("reminderEnabled") === "on";
 
   if (!participantId) {
-    return NextResponse.redirect(new URL("/admin?error=participant", request.url));
+    return NextResponse.redirect(new URL("/?error=participant", request.url));
   }
 
   await db.scheduleSetting.upsert({
@@ -38,5 +38,5 @@ export async function POST(request: Request): Promise<NextResponse> {
     data: { timezone },
   });
 
-  return NextResponse.redirect(new URL("/admin?saved=schedule", request.url));
+  return NextResponse.redirect(new URL("/?saved=schedule", request.url));
 }

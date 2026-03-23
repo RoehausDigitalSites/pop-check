@@ -5,9 +5,34 @@ import { getEnv } from "@/lib/env";
 import { buildCheckinUrl, createCheckinRequest } from "@/lib/checkins";
 import { sendCheckinSms } from "@/lib/sms";
 
-function shouldSendNow(timezone: string, dailyTimeLocal: string): boolean {
-  const nowLocal = formatInTimeZone(new Date(), timezone, "HH:mm");
-  return nowLocal === dailyTimeLocal;
+/** True if local clock is at or after the configured reminder time (same calendar day). */
+function isAtOrAfterReminderTime(timezone: string, dailyTimeLocal: string): boolean {
+  const now = new Date();
+  const nowHm = formatInTimeZone(now, timezone, "HH:mm");
+  const [nh, nm] = nowHm.split(":").map(Number);
+  const parts = dailyTimeLocal.trim().split(":");
+  const th = Number(parts[0]);
+  const tm = Number(parts[1] ?? 0);
+  if (Number.isNaN(nh) || Number.isNaN(nm) || Number.isNaN(th) || Number.isNaN(tm)) {
+    return false;
+  }
+  return nh * 60 + nm >= th * 60 + tm;
+}
+
+/** True if we already created a scheduled SMS (check-in request) for this local calendar day. */
+async function alreadySentScheduledReminderToday(
+  participantId: string,
+  timezone: string,
+): Promise<boolean> {
+  const todayLocal = formatInTimeZone(new Date(), timezone, "yyyy-MM-dd");
+  const recent = await db.checkinRequest.findMany({
+    where: { participantId, source: "SCHEDULED" },
+    orderBy: { sentAt: "desc" },
+    take: 15,
+  });
+  return recent.some(
+    (r) => formatInTimeZone(r.sentAt, timezone, "yyyy-MM-dd") === todayLocal,
+  );
 }
 
 export async function GET(request: Request): Promise<NextResponse> {
@@ -30,7 +55,10 @@ export async function GET(request: Request): Promise<NextResponse> {
     if (!schedule || !schedule.reminderEnabled) {
       continue;
     }
-    if (!shouldSendNow(schedule.timezone, schedule.dailyTimeLocal)) {
+    if (!isAtOrAfterReminderTime(schedule.timezone, schedule.dailyTimeLocal)) {
+      continue;
+    }
+    if (await alreadySentScheduledReminderToday(participant.id, schedule.timezone)) {
       continue;
     }
 

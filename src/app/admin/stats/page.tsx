@@ -8,7 +8,7 @@ import { CheckinStatsChart } from "@/components/checkin-stats-chart";
 export default async function AdminStatsPage() {
   const authenticated = await isAdminAuthenticated();
   if (!authenticated) {
-    redirect("/admin");
+    redirect("/");
   }
 
   const participant = await db.participant.findFirst({
@@ -19,7 +19,7 @@ export default async function AdminStatsPage() {
     return (
       <main className="mx-auto w-full max-w-3xl px-6 py-8">
         <p className="text-zinc-700">No active participant. Run the seed script first.</p>
-        <Link href="/admin" className="mt-4 inline-block text-blue-700 underline">
+        <Link href="/" className="mt-4 inline-block text-blue-700 underline">
           ← Back to admin
         </Link>
       </main>
@@ -32,7 +32,7 @@ export default async function AdminStatsPage() {
     return (
       <main className="mx-auto w-full max-w-3xl px-6 py-8">
         <p className="text-zinc-700">No active questionnaire configured.</p>
-        <Link href="/admin" className="mt-4 inline-block text-blue-700 underline">
+        <Link href="/" className="mt-4 inline-block text-blue-700 underline">
           ← Back to admin
         </Link>
       </main>
@@ -50,21 +50,25 @@ export default async function AdminStatsPage() {
           {stats.questionnaireTitle} — <span className="font-medium">{stats.participantName}</span>
         </p>
         <p className="mt-3 text-sm">
-          <Link href="/admin" className="text-blue-700 underline">
+          <Link href="/" className="text-blue-700 underline">
             ← Back to admin
           </Link>
         </p>
       </header>
 
-      <CheckinStatsChart
-        rows={stats.rows}
-        series={stats.series}
-        scaleMin={stats.scaleMin}
-        scaleMax={stats.scaleMax}
-        title="Responses over time"
-        description="One line per question. Higher values are toward the top of the scale."
-        emptyDescription="No check-ins yet for this questionnaire."
-      />
+      <div className="rounded-3xl bg-linear-to-b from-sky-100/20 via-white/10 to-transparent p-px">
+        <CheckinStatsChart
+          rows={stats.rows}
+          series={stats.series}
+          scaleMin={stats.scaleMin}
+          scaleMax={stats.scaleMax}
+          minLabel={stats.minLabel}
+          maxLabel={stats.maxLabel}
+          title="Responses over time"
+          description="A gentle view of mood patterns, with trend cues to show if things are easing up or getting tougher."
+          emptyDescription="No check-ins yet for this questionnaire."
+        />
+      </div>
     </main>
   );
 }

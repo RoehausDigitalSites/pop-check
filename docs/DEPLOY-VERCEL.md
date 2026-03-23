@@ -32,9 +32,13 @@ DATABASE_URL="postgresql://..." npx prisma migrate deploy
 
 ## 4. Cron (`vercel.json`)
 
-This repo includes a **Vercel Cron** entry for `GET /api/cron/send-daily`. After deploy, confirm in the Vercel dashboard **Cron Jobs** tab that the schedule looks right.
+**Hobby plan:** Vercel only allows **at most one run per day** per cron (no `*/5`, hourly, etc.). This repo defaults to **`0 2 * * *`** (02:00 UTC daily) — often a good match for an **evening** reminder in US time zones; change the hour/minute in `vercel.json` if your participant’s `dailyTimeLocal` + timezone needs a different UTC time.
 
-The example schedule may be frequent for testing — adjust `vercel.json` to a daily cron when you’re ready (e.g. once per day in UTC that matches your participant’s timezone logic in the route).
+The handler sends when **local time is on or after** the participant’s **Daily time** in admin **and** we haven’t already sent a scheduled SMS **that local calendar day**. The **first** cron run after the reminder time (in that timezone) will send — so the cron’s UTC time should fall **after** that moment when converted to the participant’s zone (e.g. use a [time zone converter](https://www.timeanddate.com/worldclock/converter.html) from `dailyTimeLocal` + timezone to UTC, then set `0 <hour> * * *`).
+
+**More reliable timing:** use a free external cron (e.g. cron-job.org) to `GET /api/cron/send-daily` with your `Authorization: Bearer` header every 5–15 minutes, or upgrade to **Pro** for flexible Vercel crons.
+
+After deploy, check **Project → Cron Jobs** that the schedule is listed.
 
 ## 5. Custom domain
 
