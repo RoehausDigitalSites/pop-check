@@ -61,12 +61,16 @@ export default async function CheckinStatsPage({ params }: PageProps) {
         </div>
       </div>
 
-      <CheckinStatsChart
-        rows={stats.rows}
-        series={stats.series}
-        scaleMin={stats.scaleMin}
-        scaleMax={stats.scaleMax}
-      />
+      <div className="rounded-3xl bg-linear-to-b from-sky-100/20 via-white/10 to-transparent p-px">
+        <CheckinStatsChart
+          rows={stats.rows}
+          series={stats.series}
+          scaleMin={stats.scaleMin}
+          scaleMax={stats.scaleMax}
+          minLabel={stats.minLabel}
+          maxLabel={stats.maxLabel}
+        />
+      </div>
     </main>
   );
 }

@@ -9,6 +9,8 @@ export type CheckinStatsPayload = {
   series: StatsSeries[];
   scaleMin: number;
   scaleMax: number;
+  minLabel: string;
+  maxLabel: string;
 };
 
 /** Load chart series + rows for the active questionnaire and a participant. */
@@ -51,8 +53,9 @@ export async function getCheckinStatsForParticipant(
 
   const rows: StatsRow[] = checkins.map((c) => {
     const row: StatsRow = {
-      label: format(c.submittedAt, "MMM d, h:mm a"),
-      fullDate: format(c.submittedAt, "MMM d, yyyy · h:mm a"),
+      label: format(c.submittedAt, "MMM d"),
+      fullDate: format(c.submittedAt, "EEEE, MMM d, yyyy"),
+      timestampMs: c.submittedAt.getTime(),
     };
     for (const q of questions) {
       const ans = c.answers.find((a) => a.questionId === q.id);
@@ -68,5 +71,7 @@ export async function getCheckinStatsForParticipant(
     series,
     scaleMin: questionnaire.scaleMin,
     scaleMax: questionnaire.scaleMax,
+    minLabel: questionnaire.minLabel,
+    maxLabel: questionnaire.maxLabel,
   };
 }

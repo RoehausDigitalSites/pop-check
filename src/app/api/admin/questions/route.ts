@@ -39,12 +39,12 @@ export async function POST(request: Request): Promise<NextResponse> {
     .filter((line) => line.length > 0);
 
   if (rawPrompts.length === 0) {
-    return NextResponse.redirect(new URL("/admin?error=no-questions", request.url));
+    return NextResponse.redirect(new URL("/?error=no-questions", request.url));
   }
 
   const questionnaire = await db.questionnaire.findFirst({ where: { isActive: true } });
   if (!questionnaire) {
-    return NextResponse.redirect(new URL("/admin?error=no-questionnaire", request.url));
+    return NextResponse.redirect(new URL("/?error=no-questionnaire", request.url));
   }
 
   const expectedLabelCount = scaleMax - scaleMin + 1;
@@ -75,5 +75,5 @@ export async function POST(request: Request): Promise<NextResponse> {
     });
   });
 
-  return NextResponse.redirect(new URL("/admin?saved=questions", request.url));
+  return NextResponse.redirect(new URL("/?saved=questions", request.url));
 }
